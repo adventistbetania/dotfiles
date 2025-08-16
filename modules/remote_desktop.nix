@@ -21,11 +21,9 @@ with lib;
 
   config = mkIf config.services.remoteDesktop.enable {
     services = {
-      xserver = {
-        enable = true;
-        displayManager.gdm.enable = true;
-        desktopManager.gnome.enable = true;
-      };
+      xserver.enable = true;
+      displayManager.gdm.enable = true;
+      desktopManager.gnome.enable = true;
 
       xrdp = {
         enable = true;
