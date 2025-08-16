@@ -6,7 +6,6 @@
       system = "x86_64-linux";
       modules = [
         ./hardware-configuration.nix
-        ./modules/remote_desktop.nix
         ({ pkgs, ... }: {
           # Bootloader
           boot.loader.grub = {
@@ -29,8 +28,35 @@
 
           # Services
           services = {
-            remoteDesktop.enable = true;
+            xserver.enable = true;
+            displayManager.gdm.enable = true;
+            desktopManager.gnome.enable = true;
+            
+            xrdp = {
+              enable = true;
+              defaultWindowManager = "${pkgs.gnome-session}/bin/gnome-session";
+              openFirewall = true;
+            };
+            
+            gnome.gnome-remote-desktop.enable = true;
+            getty.autologinUser = null;
+            displayManager.autoLogin.enable = false;
             tailscale.enable = true;
+          };
+
+          # Disable suspend/sleep features
+          systemd = {
+            targets = {
+              sleep.enable = false;
+              suspend.enable = false;
+              hibernate.enable = false;
+              hybrid-sleep.enable = false;
+            };
+            
+            services = {
+              "getty@tty1".enable = false;
+              "autovt@tty1".enable = false;
+            };
           };
 
           # Docker
