@@ -3,16 +3,23 @@
   inputs = { nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable"; };
   outputs = { self, nixpkgs, ... }: {
     nixosConfigurations.betania = nixpkgs.lib.nixosSystem {
-
       system = "x86_64-linux";
-
       modules = [
         ./hardware-configuration.nix
         ./modules/remote_desktop.nix
         ({ pkgs, ... }: {
+          # Bootloader
+          boot.loader.grub = {
+            enable = true;
+            device = "/dev/sda";
+            useOSProber = true;
+          };
+
+          # Networking
           networking.hostname = "betania";
           networking.networkmanager.enable = true;
 
+          # User
           users.users.admin = {
             isNormalUser = true;
             extraGroups = [ "wheel" "networkmanager" "docker" ];
@@ -20,11 +27,13 @@
           };
           security.sudo.wheelNeedsPassword = false;
 
+          # Services
           services = {
             remoteDesktop.enable = true;
             tailscale.enable = true;
           };
 
+          # Docker
           virtualisation = {
             docker.enable = true;
           };
