@@ -16,7 +16,7 @@
           };
 
           # Networking
-          networking.hostname = "betania";
+          networking.hostName = "betania";
           networking.networkmanager.enable = true;
 
           # User
